@@ -22,6 +22,8 @@ namespace Vision_app
     public partial class Form1 : Form
     {
         private readonly VideoCapture capture = new VideoCapture(); // readonly 접근 제한자로 값이 변하는 것을 막아준다
+        Mat frame = new Mat();
+
         static BarcodeReader barcodeReader = new BarcodeReader();
         static string VideoFrame = "VideoFrame";
 
@@ -59,7 +61,6 @@ namespace Vision_app
             capture.Dispose();
         }
         
-
         private void backgroundWoker1_DoWork(object sender, DoWorkEventArgs e) // 실제 작업할 내용을 지정하는 이벤트
         {
             var bgWorker = (BackgroundWorker)sender;
@@ -77,8 +78,8 @@ namespace Vision_app
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             var frameBitmap = (Bitmap)e.UserState;
-            pictureBox2.Image?.Dispose();
-            pictureBox2.Image = frameBitmap;
+            currentImage.Image?.Dispose();
+            currentImage.Image = frameBitmap;
         }
 
         private void checkHide_CheckedChanged(object sender, EventArgs e)
@@ -123,9 +124,19 @@ namespace Vision_app
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            string imagePath = "C:/QRCode.png";         
-            pictureBox2.Load(imagePath);
-            pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
+            capture.Read(frame);
+            capturedImage.Image = Cv2.ImShow("test", frame);
+
+            try
+            {
+                string save_name = DateTime.Now.ToString("yyyy-MM-dd--hh시mm분ss초");
+                Cv2.ImWrite("C:/capture/save_name" + ".png", frame);
+            }
+            catch { }
+
+                 
+            capturedImage.Load(currentImage);
+            currentImage.SizeMode = PictureBoxSizeMode.StretchImage;
 
             Bitmap qrCodeImage = new Bitmap(imagePath);
             Result barcodeResult = barcodeReader.Decode(qrCodeImage);

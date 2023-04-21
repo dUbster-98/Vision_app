@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.currentImage = new System.Windows.Forms.PictureBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -42,23 +42,23 @@
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.sliderTimer = new System.Windows.Forms.Timer(this.components);
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.capturedImage = new System.Windows.Forms.PictureBox();
             this.capturedImg = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.currentImage)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.sliderPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.capturedImage)).BeginInit();
             this.SuspendLayout();
             // 
-            // pictureBox2
+            // currentImage
             // 
-            this.pictureBox2.Location = new System.Drawing.Point(709, 72);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(480, 480);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pictureBox2.TabIndex = 1;
-            this.pictureBox2.TabStop = false;
+            this.currentImage.Location = new System.Drawing.Point(709, 72);
+            this.currentImage.Name = "currentImage";
+            this.currentImage.Size = new System.Drawing.Size(480, 480);
+            this.currentImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.currentImage.TabIndex = 1;
+            this.currentImage.TabStop = false;
             // 
             // textBox1
             // 
@@ -102,9 +102,9 @@
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.capturedImg);
-            this.tabPage2.Controls.Add(this.pictureBox1);
+            this.tabPage2.Controls.Add(this.capturedImage);
             this.tabPage2.Controls.Add(this.sliderPanel);
-            this.tabPage2.Controls.Add(this.pictureBox2);
+            this.tabPage2.Controls.Add(this.currentImage);
             this.tabPage2.Controls.Add(this.button1);
             this.tabPage2.Controls.Add(this.textBox1);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
@@ -203,14 +203,14 @@
             this.sliderTimer.Interval = 10;
             this.sliderTimer.Tick += new System.EventHandler(this.sliderTimer_Tick);
             // 
-            // pictureBox1
+            // capturedImage
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(320, 102);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(320, 320);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pictureBox1.TabIndex = 8;
-            this.pictureBox1.TabStop = false;
+            this.capturedImage.Location = new System.Drawing.Point(320, 102);
+            this.capturedImage.Name = "capturedImage";
+            this.capturedImage.Size = new System.Drawing.Size(320, 320);
+            this.capturedImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.capturedImage.TabIndex = 8;
+            this.capturedImage.TabStop = false;
             // 
             // capturedImg
             // 
@@ -232,19 +232,19 @@
             this.Text = "Form1";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.currentImage)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.sliderPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.capturedImage)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.PictureBox currentImage;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TabControl tabControl1;
@@ -258,7 +258,7 @@
         private System.Windows.Forms.Timer sliderTimer;
         private System.Windows.Forms.CheckBox checkHide;
         private System.Windows.Forms.Label capturedImg;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox capturedImage;
     }
 }
 
