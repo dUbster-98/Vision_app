@@ -9,49 +9,82 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using OpenCvSharp;
+using OpenCvSharp.Extensions;
 using ZXing;
+using System.Threading;
+
 using static System.Net.Mime.MediaTypeNames;
 using System.Diagnostics.Tracing;
+using Tesseract;
 
 namespace Vision_app
 {
     public partial class Form1 : Form
     {
-
-        static string VideoFrame = "VideoFrame";
+        private readonly VideoCapture capture = new VideoCapture(); // readonly 접근 제한자로 값이 변하는 것을 막아준다
         static BarcodeReader barcodeReader = new BarcodeReader();
+        static string VideoFrame = "VideoFrame";
+
+        //슬라이딩 메뉴의 최대, 최소 폭 크기
+        const int MAX_SLIDING_WIDTH = 200;
+        const int MIN_SLIDING_WIDTH = 50;
+        //슬라이딩 메뉴가 보이는/접히는 속도 조절
+        const int STEP_SLIDING = 10;
+        //최초 슬라이딩 메뉴 크기
+        int _posSliding = 200;
+
 
         public Form1()
         {
             InitializeComponent();
-            //Cam_init();
         }
 
-        private void Cam_init()
+        private void Form1_Load(object sender, EventArgs e)
         {
+            capture.Open(0, VideoCaptureAPIs.ANY);
 
-            VideoCapture videoCapture = new VideoCapture(0);
-            Mat frame = new Mat();
-
-            videoCapture.Set(VideoCaptureProperties.FrameWidth, 640);
-            videoCapture.Set(VideoCaptureProperties.FrameHeight, 480);
-
-            while (true)
+            if (!capture.IsOpened())
             {
-                if (videoCapture.IsOpened() == true)
-                {
-                    videoCapture.Read(frame);
-                    Cv2.ImShow("VideoFrame", frame);
-                    if (Cv2.WaitKey(1) == 27) break;
-                }
+                Close();
+                return;
             }
-            //Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
-            //Result result = barcodeReader.Decode(frame.ToImage<Bgr, byte>());
 
-            videoCapture.Release();
-            Cv2.DestroyAllWindows();
+            ClientSize = new System.Drawing.Size(capture.FrameWidth, capture.FrameHeight);
+            backgroundWorker1.RunWorkerAsync();  // 스레드로 비동기 백그라운드를 실행
         }
 
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            backgroundWorker1.CancelAsync();
+            capture.Dispose();
+        }
+        
+
+        private void backgroundWoker1_DoWork(object sender, DoWorkEventArgs e) // 실제 작업할 내용을 지정하는 이벤트
+        {
+            var bgWorker = (BackgroundWorker)sender;
+
+            while (!bgWorker.CancellationPending)
+            {
+                using (var frameMat = capture.RetrieveMat())  // 해당 리소스 범위를 벗어나면 자동으로 리소스를 해제해줌
+                {
+                    var frameBitmap = BitmapConverter.ToBitmap(frameMat);
+                    bgWorker.ReportProgress(0, frameBitmap);
+                }
+                Thread.Sleep(100); // 1초에 10번 갱신, fps 10
+            }
+        }
+        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            var frameBitmap = (Bitmap)e.UserState;
+            pictureBox2.Image?.Dispose();
+            pictureBox2.Image = frameBitmap;
+        }
+
+        private void checkBoxHide_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxHide_Checked == ture)
+        }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
@@ -82,14 +115,35 @@ namespace Vision_app
             qrCodeImage.Dispose();
         }
 
+        
+
+
+
         private void tabControl1_TabIndexChanged(object sender, EventArgs e)
         {
+            Mat frame = new Mat();
 
+
+            while (true)
+            {
+                if (capture.IsOpened() == true)
+                {
+                    capture.Read(frame);
+                    Cv2.ImShow("VideoFrame", frame);
+                    if (Cv2.WaitKey(1) == 27) break;
+                }
+            }
+            //Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
+            //Result result = barcodeReader.Decode(frame.ToImage<Bgr, byte>());
+
+            capture.Release();
+            Cv2.DestroyAllWindows();
         }
 
         private void menuToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }
+
     }
 }
