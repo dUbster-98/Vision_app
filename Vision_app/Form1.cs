@@ -81,9 +81,44 @@ namespace Vision_app
             pictureBox2.Image = frameBitmap;
         }
 
-        private void checkBoxHide_CheckedChanged(object sender, EventArgs e)
+        private void checkHide_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBoxHide_Checked == ture)
+            if (checkHide.Checked == true)
+            {
+                button2.Text = " QR";
+                button3.Text = " B";
+                checkHide.Text = ">";
+                button2.TextAlign = ContentAlignment.MiddleLeft;
+                button3.TextAlign = ContentAlignment.MiddleLeft;
+            }
+            else
+            {
+                button2.Text = "버튼1";
+                button3.Text = "버튼2";
+                checkHide.Text = "<";
+                button2.TextAlign = ContentAlignment.MiddleCenter;
+                button3.TextAlign = ContentAlignment.MiddleCenter;
+            }
+
+            sliderTimer.Start();
+        }
+
+        private void sliderTimer_Tick(object sender, EventArgs e)
+        {
+            if (checkHide.Checked == true)
+            {
+                _posSliding -= STEP_SLIDING;
+                if(_posSliding <= MIN_SLIDING_WIDTH)
+                    sliderTimer.Stop();
+            }
+            else
+            {
+                _posSliding += STEP_SLIDING;
+                if(_posSliding >= MAX_SLIDING_WIDTH)
+                    sliderTimer.Stop();
+            }
+
+            sliderPanel.Width = _posSliding;
         }
 
         private void button1_Click_1(object sender, EventArgs e)
@@ -116,9 +151,6 @@ namespace Vision_app
         }
 
         
-
-
-
         private void tabControl1_TabIndexChanged(object sender, EventArgs e)
         {
             Mat frame = new Mat();
@@ -138,11 +170,6 @@ namespace Vision_app
 
             capture.Release();
             Cv2.DestroyAllWindows();
-        }
-
-        private void menuToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
         }
 
     }
