@@ -22,11 +22,9 @@ namespace Vision_app
 {
     public partial class Form1 : Form
     {
-        private readonly VideoCapture capture = new VideoCapture(); // readonly 접근 제한자로 값이 변하는 것을 막아준다
+        VideoCapture capture = new VideoCapture();
         Mat frame = new Mat();
-
         static BarcodeReader barcodeReader = new BarcodeReader();
-        static string VideoFrame = "VideoFrame";
 
         //슬라이딩 메뉴의 최대, 최소 폭 크기
         const int MAX_SLIDING_WIDTH = 200;
@@ -63,7 +61,7 @@ namespace Vision_app
         }
         
         private void backgroundWoker1_DoWork(object sender, DoWorkEventArgs e) // 실제 작업할 내용을 지정하는 이벤트
-        {
+        {           
             var bgWorker = (BackgroundWorker)sender;
 
             while (!bgWorker.CancellationPending)
@@ -74,28 +72,34 @@ namespace Vision_app
                     bgWorker.ReportProgress(0, frameBitmap);
                 }
                 Thread.Sleep(100); // 1초에 10번 갱신, fps 10
-            }
+            }           
         }
+
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
+        {                      
             var frameBitmap = (Bitmap)e.UserState;
             currentImage.Image?.Dispose();
-            currentImage.Image = frameBitmap;
-            
-            Result barcodeResult = barcodeReader.Decode(frameBitmap);
-            
-            if (barcodeResult != null)
-            {
-                Mat capture = BitmapConverter.ToMat(frameBitmap);
-                string qrText = barcodeResult.ToString();
-                /*
-                Bitmap resizeImage = new Bitmap(sourceImage, resize);
-                capturedImage.Image = frameBitmap;
 
-                
-                OpenCvSharp.Point messagePosition = new OpenCvSharp.Point(capture.Width / 2, capture.Height / 2);
-                Cv2.PutText(capture, qrText, messagePosition, HersheyFonts.HersheyComplex, 0.5, Scalar.White);
-                
+            Result barcodeResult = barcodeReader.Decode(frameBitmap);
+
+            Mat src = frameBitmap.ToMat();
+            Mat dst = new Mat(src.Size(), MatType.CV_8UC3);
+
+            Cv2.Flip(src, dst, FlipMode.Y);
+            currentImage.Image = dst.ToBitmap();
+                                          
+            if (barcodeResult != null)
+            {              
+                string qrText = barcodeResult.ToString();
+                Mat QRCapture = new Mat();
+
+                Cv2.Resize(dst, QRCapture, new OpenCvSharp.Size(320, 320));             
+                                
+                OpenCvSharp.Point messagePosition = new OpenCvSharp.Point(QRCapture.Width / 2, QRCapture.Height / 2);
+                Cv2.PutText(QRCapture, qrText, messagePosition, HersheyFonts.HersheyComplex, 0.5, Scalar.White);
+
+                capturedImage.Image = QRCapture.ToBitmap();
+                /*
                 ResultPoint[] border = barcodeResult.ResultPoints;
                 Cv2.Rectangle(capture, new OpenCvSharp.Rect((int)border[0].X, (int)border[0].Y, 
                     (int)(border[2].X - border[0].X), (int)(border[2].Y - border[0].Y)), Scalar.Red);
@@ -103,15 +107,17 @@ namespace Vision_app
                 using (Graphics graphics = Graphics.FromImage(frameBitmap))
                 {
                     Pen pen = new Pen(Color.Red, 2);
-                    graphics.DrawRectangle(pen, capture);
+                    graphics.DrawRectangle(pen, graphics);
                 }
                 */
-                
+                currentImage.Image = dst.ToBitmap();
+
                 textBox1.Text = "QR 코드 내용: " + barcodeResult.Text;
+                src.Dispose();
             }
             else
             {
-                textBox1.Text = "QR 코드를 읽어올 수 없습니다.";
+                
             }
             
         }
@@ -162,18 +168,13 @@ namespace Vision_app
             capture.Read(frame);
             try
             {
-                string save_name = DateTime.Now.ToString("yyyy-MM-dd--hh시mm분ss초");
-                Cv2.ImWrite("C:/capture/save_name" + ".png", frame);
+                string save_name = DateTime.Now.ToString("yyMMddhhmmss");
+                Cv2.ImWrite("C:/capture/" + save_name + ".png", frame);
             }
-            catch { }
-                
-            /*
-            capturedImage.Load(currentImage);
-            currentImage.SizeMode = PictureBoxSizeMode.StretchImage;
+            catch
+            { 
 
-            Bitmap qrCodeImage = new Bitmap(i);
-            Result barcodeResult = barcodeReader.Decode(qrCodeImage);
-            */
+            }              
         }
 
         

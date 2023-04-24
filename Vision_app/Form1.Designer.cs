@@ -52,23 +52,23 @@
             // 
             // currentImage
             // 
-            this.currentImage.Location = new System.Drawing.Point(709, 72);
+            this.currentImage.Location = new System.Drawing.Point(586, 71);
             this.currentImage.Name = "currentImage";
-            this.currentImage.Size = new System.Drawing.Size(480, 480);
+            this.currentImage.Size = new System.Drawing.Size(640, 480);
             this.currentImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.currentImage.TabIndex = 1;
             this.currentImage.TabStop = false;
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(320, 458);
+            this.textBox1.Location = new System.Drawing.Point(248, 458);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(255, 21);
             this.textBox1.TabIndex = 2;
             // 
             // buttonCapture
             // 
-            this.buttonCapture.Location = new System.Drawing.Point(321, 519);
+            this.buttonCapture.Location = new System.Drawing.Point(249, 519);
             this.buttonCapture.Name = "buttonCapture";
             this.buttonCapture.Size = new System.Drawing.Size(187, 33);
             this.buttonCapture.TabIndex = 3;
@@ -107,7 +107,7 @@
             // 
             this.capturedImg.AutoSize = true;
             this.capturedImg.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.capturedImg.Location = new System.Drawing.Point(318, 71);
+            this.capturedImg.Location = new System.Drawing.Point(246, 71);
             this.capturedImg.Name = "capturedImg";
             this.capturedImg.Size = new System.Drawing.Size(115, 16);
             this.capturedImg.TabIndex = 9;
@@ -115,7 +115,7 @@
             // 
             // capturedImage
             // 
-            this.capturedImage.Location = new System.Drawing.Point(320, 102);
+            this.capturedImage.Location = new System.Drawing.Point(248, 102);
             this.capturedImage.Name = "capturedImage";
             this.capturedImage.Size = new System.Drawing.Size(320, 320);
             this.capturedImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
