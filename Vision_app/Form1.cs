@@ -16,6 +16,7 @@ using System.Threading;
 using static System.Net.Mime.MediaTypeNames;
 using System.Diagnostics.Tracing;
 using Tesseract;
+using ZXing.Common.Detector;
 
 namespace Vision_app
 {
@@ -80,6 +81,39 @@ namespace Vision_app
             var frameBitmap = (Bitmap)e.UserState;
             currentImage.Image?.Dispose();
             currentImage.Image = frameBitmap;
+            
+            Result barcodeResult = barcodeReader.Decode(frameBitmap);
+            
+            if (barcodeResult != null)
+            {
+                Mat capture = BitmapConverter.ToMat(frameBitmap);
+                string qrText = barcodeResult.ToString();
+                /*
+                Bitmap resizeImage = new Bitmap(sourceImage, resize);
+                capturedImage.Image = frameBitmap;
+
+                
+                OpenCvSharp.Point messagePosition = new OpenCvSharp.Point(capture.Width / 2, capture.Height / 2);
+                Cv2.PutText(capture, qrText, messagePosition, HersheyFonts.HersheyComplex, 0.5, Scalar.White);
+                
+                ResultPoint[] border = barcodeResult.ResultPoints;
+                Cv2.Rectangle(capture, new OpenCvSharp.Rect((int)border[0].X, (int)border[0].Y, 
+                    (int)(border[2].X - border[0].X), (int)(border[2].Y - border[0].Y)), Scalar.Red);
+                
+                using (Graphics graphics = Graphics.FromImage(frameBitmap))
+                {
+                    Pen pen = new Pen(Color.Red, 2);
+                    graphics.DrawRectangle(pen, capture);
+                }
+                */
+                
+                textBox1.Text = "QR 코드 내용: " + barcodeResult.Text;
+            }
+            else
+            {
+                textBox1.Text = "QR 코드를 읽어올 수 없습니다.";
+            }
+            
         }
 
         private void checkHide_CheckedChanged(object sender, EventArgs e)
@@ -124,41 +158,22 @@ namespace Vision_app
 
         private void button1_Click_1(object sender, EventArgs e)
         {
+           
             capture.Read(frame);
-            capturedImage.Image = Cv2.ImShow("test", frame);
-
             try
             {
                 string save_name = DateTime.Now.ToString("yyyy-MM-dd--hh시mm분ss초");
                 Cv2.ImWrite("C:/capture/save_name" + ".png", frame);
             }
             catch { }
-
-                 
+                
+            /*
             capturedImage.Load(currentImage);
             currentImage.SizeMode = PictureBoxSizeMode.StretchImage;
 
-            Bitmap qrCodeImage = new Bitmap(imagePath);
+            Bitmap qrCodeImage = new Bitmap(i);
             Result barcodeResult = barcodeReader.Decode(qrCodeImage);
-
-            // 바코드 결과 출력
-            if (barcodeResult != null)
-            {
-                ResultPoint[] border = barcodeResult.ResultPoints;
-                Rectangle rect = new Rectangle((int)border[0].X, (int)border[0].Y, (int)(border[2].X - border[0].X), (int)(border[2].Y - border[0].Y));
-                using (Graphics graphics= Graphics.FromImage(qrCodeImage))
-                {
-                    Pen pen = new Pen(Color.Red,2);
-                    graphics.DrawRectangle(pen, rect);
-                }
-
-                textBox1.Text = "QR 코드 내용: " + barcodeResult.Text;
-            }
-            else
-            {
-                textBox1.Text = "QR 코드를 읽어올 수 없습니다.";
-            }
-            qrCodeImage.Dispose();
+            */
         }
 
         
