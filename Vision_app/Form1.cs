@@ -17,6 +17,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Diagnostics.Tracing;
 using Tesseract;
 using ZXing.Common.Detector;
+using System.Security.Cryptography;
 
 namespace Vision_app
 {
@@ -39,9 +40,12 @@ namespace Vision_app
         {
             InitializeComponent();
         }
-
+        
         private void Form1_Load(object sender, EventArgs e)
         {
+            tabControl1.ItemSize = new System.Drawing.Size(0, 1);
+            tabControl1.SelectedIndex = 0;
+            
             capture.Open(0, VideoCaptureAPIs.ANY);
 
             if (!capture.IsOpened())
@@ -51,33 +55,37 @@ namespace Vision_app
             }
 
             ClientSize = new System.Drawing.Size(capture.FrameWidth, capture.FrameHeight);
-            backgroundWorker1.RunWorkerAsync();  // 스레드로 비동기 백그라운드를 실행
+
+            backgroundWorker1.RunWorkerAsync();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            backgroundWorker1.CancelAsync();
             capture.Dispose();
+            backgroundWorker1.CancelAsync();
+            backgroundWorker2.CancelAsync();
+            backgroundWorker3.CancelAsync();
         }
-        
-        private void backgroundWoker1_DoWork(object sender, DoWorkEventArgs e) // 실제 작업할 내용을 지정하는 이벤트
-        {           
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
             var bgWorker = (BackgroundWorker)sender;
 
             while (!bgWorker.CancellationPending)
             {
-                using (var frameMat = capture.RetrieveMat())  // 해당 리소스 범위를 벗어나면 자동으로 리소스를 해제해줌
+                using (var frameMat = capture.RetrieveMat())  // using으로 해당 리소스 범위를 벗어나면 자동으로 리소스를 해제해줌
+                                                              // 비디오 프레임을 캡처한다
                 {
                     var frameBitmap = BitmapConverter.ToBitmap(frameMat);
-                    bgWorker.ReportProgress(0, frameBitmap);
+                    bgWorker.ReportProgress(0, frameBitmap);         // ProgressChanged 이벤트를 발생시킨다
                 }
-                Thread.Sleep(100); // 1초에 10번 갱신, fps 10
-            }           
+                Thread.Sleep(33); // 1초에 10번 갱신, fps 10
+            }
         }
 
-        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e) // UI와 통신하는 이벤트
         {                      
-            var frameBitmap = (Bitmap)e.UserState;
+            var frameBitmap = (Bitmap)e.UserState;          // UserState로 프레임을 받아온다
             currentImage.Image?.Dispose();
 
             Result barcodeResult = barcodeReader.Decode(frameBitmap);
@@ -99,17 +107,7 @@ namespace Vision_app
                 Cv2.PutText(QRCapture, qrText, messagePosition, HersheyFonts.HersheyComplex, 0.5, Scalar.White);
 
                 capturedImage.Image = QRCapture.ToBitmap();
-                /*
-                ResultPoint[] border = barcodeResult.ResultPoints;
-                Cv2.Rectangle(capture, new OpenCvSharp.Rect((int)border[0].X, (int)border[0].Y, 
-                    (int)(border[2].X - border[0].X), (int)(border[2].Y - border[0].Y)), Scalar.Red);
-                
-                using (Graphics graphics = Graphics.FromImage(frameBitmap))
-                {
-                    Pen pen = new Pen(Color.Red, 2);
-                    graphics.DrawRectangle(pen, graphics);
-                }
-                */
+
                 currentImage.Image = dst.ToBitmap();
 
                 textBox1.Text = "QR 코드 내용: " + barcodeResult.Text;
@@ -122,26 +120,154 @@ namespace Vision_app
             
         }
 
+        private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var bgWorker = (BackgroundWorker)sender;
+
+            while (!bgWorker.CancellationPending)
+            {
+                using (var frameMat = capture.RetrieveMat())
+                {
+                    var frameBitmap = frameMat.ToBitmap();
+                    bgWorker.ReportProgress(0, frameBitmap);
+                }
+                Thread.Sleep(33);
+            }
+        }
+
+        private void backgroundWorker2_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            var frameBitmap = (Bitmap)e.UserState;
+            edgeDetect.Image?.Dispose();
+
+            Mat src = frameBitmap.ToMat();
+            Mat dst = src.Clone();
+            Cv2.Flip(src, src, FlipMode.Y);
+
+            Mat target = new Mat();
+            OpenCvSharp.Point[][] contours;
+            HierarchyIndex[] hierarchy;
+
+            Mat element = Cv2.GetStructuringElement(MorphShapes.Rect, new OpenCvSharp.Size(3,3));
+
+            Cv2.CvtColor(src, dst, ColorConversionCodes.BGR2GRAY);
+            Cv2.Threshold(dst, dst, 230, 255, ThresholdTypes.Binary);
+            Cv2.MorphologyEx(dst, dst, MorphTypes.Close, element, new OpenCvSharp.Point(-1, -1), 2);
+            Cv2.BitwiseNot(dst, dst);
+
+            Cv2.FindContours(dst, out contours, out hierarchy, RetrievalModes.Tree, ContourApproximationModes.ApproxTC89KCOS);
+            Cv2.DrawContours(src, contours, -1, new Scalar(0, 0, 255), 2, LineTypes.AntiAlias, hierarchy, 3);
+
+            /*
+            for (int i = 0; i < contours.Length; i++)
+            {
+                for (int j = 0; j < contours[i].Length; j++)
+                {
+                    Cv2.Circle(src, contours[i][j], 1, new Scalar(0, 0, 255), 3);
+                }
+            }
+            */
+
+            edgeDetect.Image = src.ToBitmap();
+ 
+        }
+
+        private void backgroundWorker3_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var bgWorker = (BackgroundWorker)sender;
+
+            while (!bgWorker.CancellationPending)
+            {
+                using (var frameMat = capture.RetrieveMat())
+                {
+                    var frameBitmap = BitmapConverter.ToBitmap(frameMat);
+                    bgWorker.ReportProgress(0, frameBitmap);
+                }
+                Thread.Sleep(33);
+            }
+        }
+
+        private void backgroundWorker3_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+
+        }
+
         private void checkHide_CheckedChanged(object sender, EventArgs e)
         {
             if (checkHide.Checked == true)
             {
-                button2.Text = " QR";
-                button3.Text = " B";
+                QR1.Text = " QR";
+                ED1.Text = " ED";
+                PM1.Text = " PM";
                 checkHide.Text = ">";
-                button2.TextAlign = ContentAlignment.MiddleLeft;
-                button3.TextAlign = ContentAlignment.MiddleLeft;
+                QR1.TextAlign = ContentAlignment.MiddleLeft;
+                ED1.TextAlign = ContentAlignment.MiddleLeft;
+                PM1.TextAlign = ContentAlignment.MiddleLeft;
             }
             else
             {
-                button2.Text = "버튼1";
-                button3.Text = "버튼2";
+                QR1.Text = "QRCode Reading";
+                ED1.Text = "Edge Detecting";
+                PM1.Text = "Pattern Matching";
                 checkHide.Text = "<";
-                button2.TextAlign = ContentAlignment.MiddleCenter;
-                button3.TextAlign = ContentAlignment.MiddleCenter;
+                QR1.TextAlign = ContentAlignment.MiddleCenter;
+                ED1.TextAlign = ContentAlignment.MiddleCenter;
+                PM1.TextAlign = ContentAlignment.MiddleCenter;
             }
 
             sliderTimer.Start();
+        }
+
+        private void checkHide2_CheckedChanged_1(object sender, EventArgs e)
+        {
+            if (checkHide2.Checked == true)
+            {
+                QR2.Text = " QR";
+                ED2.Text = " ED";
+                PM2.Text = " PM";
+                checkHide2.Text = ">";
+                QR2.TextAlign = ContentAlignment.MiddleLeft;
+                ED2.TextAlign = ContentAlignment.MiddleLeft;
+                PM2.TextAlign = ContentAlignment.MiddleLeft;
+            }
+            else
+            {
+                QR2.Text = "QRCode Reading";
+                ED2.Text = "Edge Detecting";
+                PM2.Text = "Pattern Matching";
+                checkHide2.Text = "<";
+                QR2.TextAlign = ContentAlignment.MiddleCenter;
+                ED2.TextAlign = ContentAlignment.MiddleCenter;
+                PM2.TextAlign = ContentAlignment.MiddleCenter;
+            }
+
+            sliderTimer2.Start();
+        }
+
+        private void checkHide3_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkHide3.Checked == true)
+            {
+                QR3.Text = " QR";
+                ED3.Text = " ED";
+                PM3.Text = " PM";
+                checkHide3.Text = ">";
+                QR3.TextAlign = ContentAlignment.MiddleLeft;
+                ED3.TextAlign = ContentAlignment.MiddleLeft;
+                PM3.TextAlign = ContentAlignment.MiddleLeft;
+            }
+            else
+            {
+                QR3.Text = "QRCode Reading";
+                ED3.Text = "Edge Detecting";
+                PM3.Text = "Pattern Matching";
+                checkHide3.Text = "<";
+                QR3.TextAlign = ContentAlignment.MiddleCenter;
+                ED3.TextAlign = ContentAlignment.MiddleCenter;
+                PM3.TextAlign = ContentAlignment.MiddleCenter;
+            }
+
+            slderTimer3.Start();
         }
 
         private void sliderTimer_Tick(object sender, EventArgs e)
@@ -162,6 +288,42 @@ namespace Vision_app
             sliderPanel.Width = _posSliding;
         }
 
+        private void sliderTimer2_Tick(object sender, EventArgs e)
+        {
+            if (checkHide2.Checked == true)
+            {
+                _posSliding -= STEP_SLIDING;
+                if (_posSliding <= MIN_SLIDING_WIDTH)
+                    sliderTimer2.Stop();
+            }
+            else
+            {
+                _posSliding += STEP_SLIDING;
+                if (_posSliding >= MAX_SLIDING_WIDTH)
+                    sliderTimer2.Stop();
+            }
+
+            sliderPanel2.Width = _posSliding;
+        }
+
+        private void slderTimer3_Tick(object sender, EventArgs e)
+        {
+            if (checkHide3.Checked == true)
+            {
+                _posSliding -= STEP_SLIDING;
+                if (_posSliding <= MIN_SLIDING_WIDTH)
+                    slderTimer3.Stop();
+            }
+            else
+            {
+                _posSliding += STEP_SLIDING;
+                if (_posSliding >= MAX_SLIDING_WIDTH)
+                    slderTimer3.Stop();
+            }
+
+            sliderPanel3.Width = _posSliding;
+        }
+
         private void button1_Click_1(object sender, EventArgs e)
         {
            
@@ -175,29 +337,125 @@ namespace Vision_app
             { 
 
             }              
+        }    
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            tabControl1.SelectedIndex = 0;
+
+            try
+            {
+                backgroundWorker1.RunWorkerAsync();
+                backgroundWorker2.CancelAsync();
+                backgroundWorker3.CancelAsync();
+            }
+            catch { }
         }
 
-        
-        private void tabControl1_TabIndexChanged(object sender, EventArgs e)
+        private void button3_Click(object sender, EventArgs e)
         {
-            Mat frame = new Mat();
+            tabControl1.SelectedIndex = 1;
 
-
-            while (true)
+            try
             {
-                if (capture.IsOpened() == true)
-                {
-                    capture.Read(frame);
-                    Cv2.ImShow("VideoFrame", frame);
-                    if (Cv2.WaitKey(1) == 27) break;
-                }
+                backgroundWorker2.RunWorkerAsync();
+                backgroundWorker1.CancelAsync();
+                backgroundWorker3.CancelAsync();
             }
-            //Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
-            //Result result = barcodeReader.Decode(frame.ToImage<Bgr, byte>());
+            catch { }
+        }
 
-            capture.Release();
-            Cv2.DestroyAllWindows();
+        private void button7_Click(object sender, EventArgs e)
+        {
+            tabControl1.SelectedIndex = 2;
+
+            try
+            {
+                backgroundWorker3.RunWorkerAsync();
+                backgroundWorker1.CancelAsync();
+                backgroundWorker2.CancelAsync();
+            }
+            catch { }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            tabControl1.SelectedIndex = 0;
+
+            try
+            {
+                backgroundWorker1.RunWorkerAsync();  // 스레드로 비동기 백그라운드를 실행
+                backgroundWorker2.CancelAsync();
+                backgroundWorker3.CancelAsync();
+            }
+            catch { }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            tabControl1.SelectedIndex = 1;
+
+            try
+            {
+                backgroundWorker2.RunWorkerAsync();
+                backgroundWorker1.CancelAsync();
+                backgroundWorker3.CancelAsync();
+            }
+            catch { }
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            tabControl1.SelectedIndex = 2;
+
+            try
+            {
+                backgroundWorker3.RunWorkerAsync();
+                backgroundWorker1.CancelAsync();
+                backgroundWorker2.CancelAsync();
+            }
+            catch { }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            tabControl1.SelectedIndex = 0;
+
+            try
+            {
+                backgroundWorker1.RunWorkerAsync();
+                backgroundWorker2.CancelAsync();
+                backgroundWorker3.CancelAsync();
+            }
+            catch { }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            tabControl1.SelectedIndex = 1;
+
+            try
+            {
+                backgroundWorker2.RunWorkerAsync();
+                backgroundWorker1.CancelAsync();
+                backgroundWorker3.CancelAsync();
+            }
+            catch { }
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            tabControl1.SelectedIndex = 2;
+
+            try
+            {
+                backgroundWorker3.RunWorkerAsync();
+                backgroundWorker1.CancelAsync();
+                backgroundWorker2.CancelAsync();
+            }
+            catch { }
         }
 
     }
+
 }
