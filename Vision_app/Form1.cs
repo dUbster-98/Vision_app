@@ -18,6 +18,8 @@ using System.Diagnostics.Tracing;
 using Tesseract;
 using ZXing.Common.Detector;
 using System.Security.Cryptography;
+using OpenCvSharp.XPhoto;
+using System.Drawing.Drawing2D;
 
 namespace Vision_app
 {
@@ -35,15 +37,110 @@ namespace Vision_app
         //최초 슬라이딩 메뉴 크기
         int _posSliding = 200;
 
+        private System.Drawing.Point LastPoint;
+        private Bitmap VICapturedImg;       // Vision Ispection captured Image
+        private double ratio = 1.0F;
+        private System.Drawing.Point imgPoint;
+        private Rectangle imgRect;
+        private System.Drawing.Point clickPoint;
+
 
         public Form1()
         {
             InitializeComponent();
+            compareImg.MouseWheel += new MouseEventHandler(compareImg_MouseWheel);
+            compareImg.SizeMode = PictureBoxSizeMode.StretchImage;
+
+            // VICapturedImg = new Bitmap(@"E:\01.bmp");
+            imgPoint = new System.Drawing.Point(compareImg.Width / 2, compareImg.Height / 2);
+            imgRect = new Rectangle(0, 0, compareImg.Width, compareImg.Height);
+            ratio = 1.0;
+            clickPoint = imgPoint;
+
+            compareImg.Invalidate();
+
         }
         
+        private void compareImg_MouseWheel(object sender, MouseEventArgs e)
+        {
+            int lines = e.Delta * SystemInformation.MouseWheelScrollLines / 120;
+            PictureBox pb = (PictureBox)sender;
+
+            if (lines > 0)
+            {
+                ratio *= 1.1F;
+                if (ratio > 100.0) ratio = 100.0f;
+
+                imgRect.Width = (int)Math.Round(compareImg.Width * ratio);
+                imgRect.Height = (int)Math.Round(compareImg.Height * ratio);
+                imgRect.X = -(int)Math.Round(1.1F * (imgPoint.X - imgRect.X) - imgPoint.X);
+                imgRect.Y = -(int)Math.Round(1.1F * (imgPoint.Y - imgRect.Y) - imgPoint.Y);
+            }
+            else if (lines < 0)
+            {
+                ratio *= 0.9F;
+                if (ratio < 1) ratio = 1;
+
+                imgRect.Width = (int)Math.Round(compareImg.Width * ratio);
+                imgRect.Height = (int)Math.Round(compareImg.Height * ratio);
+                imgRect.X = -(int)Math.Round(0.9F * (imgPoint.X - imgRect.X) - imgPoint.X);
+                imgRect.Y = -(int)Math.Round(0.9F * (imgPoint.Y - imgRect.Y) - imgPoint.Y);
+            }
+
+            if (imgRect.X > 0) imgRect.X = 0;             // 범위지정
+            if (imgRect.Y > 0) imgRect.Y = 0;
+            if (imgRect.X + imgRect.Width < compareImg.Width) imgRect.X = compareImg.Width - imgRect.Width;
+            if (imgRect.Y + imgRect.Height < compareImg.Height) imgRect.Y = compareImg.Height - imgRect.Height;
+
+            compareImg.Invalidate();  // Paint 이벤트가 일어날 때 처리해서 이미지를 갱신
+        }
+        /*
+        private void compareImg_Paint(object sender, PaintEventArgs e)
+        {
+            if (compareImg.Image != null)
+            {
+                e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+
+                e.Graphics.DrawImage(compareImg.Image, imgRect);   // 새로 이미지를 그린다
+                compareImg.Focus();
+            }
+        }
+
+        private void compareImg_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                clickPoint = new System.Drawing.Point(e.X, e.Y);
+            }
+            compareImg.Invalidate();
+        }
+
+        private void compareImg_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                imgRect.X = imgRect.X + (int)Math.Round((double)(e.X - clickPoint.X) / 5);
+                if (imgRect.X >= 0) imgRect.X = 0;
+                if (Math.Abs(imgRect.X) >= Math.Abs(imgRect.Width - compareImg.Width)) imgRect.X = -(imgRect.Width - compareImg.Width);
+                imgRect.Y = imgRect.Y + (int)Math.Round((double)(e.Y - clickPoint.Y) / 5);
+                if (imgRect.Y >= 0) imgRect.Y = 0;
+                if (Math.Abs(imgRect.Y) >= Math.Abs(imgRect.Height - compareImg.Height)) imgRect.Y = -(imgRect.Height - compareImg.Height);
+            }
+            else
+            {
+                LastPoint = e.Location;
+            }
+
+            compareImg.Invalidate();
+        }
+        */
+
+
+
+
         private void Form1_Load(object sender, EventArgs e)
         {
-            tabControl1.ItemSize = new System.Drawing.Size(0, 1);
+            //tabControl1.ItemSize = new System.Drawing.Size(0, 1);
             tabControl1.SelectedIndex = 0;
             
             capture.Open(0, VideoCaptureAPIs.ANY);
@@ -73,15 +170,34 @@ namespace Vision_app
 
             while (!bgWorker.CancellationPending)
             {
-                using (var frameMat = capture.RetrieveMat())  // using으로 해당 리소스 범위를 벗어나면 자동으로 리소스를 해제해줌
-                                                              // 비디오 프레임을 캡처한다
+                using (var frameMat = capture.RetrieveMat())
                 {
                     var frameBitmap = BitmapConverter.ToBitmap(frameMat);
-                    bgWorker.ReportProgress(0, frameBitmap);         // ProgressChanged 이벤트를 발생시킨다
+                    bgWorker.ReportProgress(0, frameBitmap);
+
                 }
-                Thread.Sleep(33); // 1초에 10번 갱신, fps 10
+
+                Thread.Sleep(33);
             }
         }
+        /*
+         private void backgroundWorker3_DoWork(object sender, DoWorkEventArgs e)
+         {
+             var bgWorker = (BackgroundWorker)sender;
+
+             while (!bgWorker.CancellationPending)
+             {
+                 using (var frameMat = capture3.RetrieveMat())  // using으로 해당 리소스 범위를 벗어나면 자동으로 리소스를 해제해줌
+                                                                // 비디오 프레임을 캡처한다
+                 {
+                     var frameBitmap = BitmapConverter.ToBitmap(frameMat);
+                     bgWorker.ReportProgress(0, frameBitmap);         // ProgressChanged 이벤트를 발생시킨다
+                 }
+
+                 Thread.Sleep(33); // 1초에 30번 갱신, fps 30
+             }
+         }
+        */
 
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e) // UI와 통신하는 이벤트
         {                      
@@ -111,28 +227,12 @@ namespace Vision_app
                 currentImage.Image = dst.ToBitmap();
 
                 textBox1.Text = "QR 코드 내용: " + barcodeResult.Text;
-                src.Dispose();
             }
             else
             {
                 
             }
             
-        }
-
-        private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
-        {
-            var bgWorker = (BackgroundWorker)sender;
-
-            while (!bgWorker.CancellationPending)
-            {
-                using (var frameMat = capture.RetrieveMat())
-                {
-                    var frameBitmap = frameMat.ToBitmap();
-                    bgWorker.ReportProgress(0, frameBitmap);
-                }
-                Thread.Sleep(33);
-            }
         }
 
         private void backgroundWorker2_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -144,7 +244,6 @@ namespace Vision_app
             Mat dst = src.Clone();
             Cv2.Flip(src, src, FlipMode.Y);
 
-            Mat target = new Mat();
             OpenCvSharp.Point[][] contours;
             HierarchyIndex[] hierarchy;
 
@@ -169,26 +268,38 @@ namespace Vision_app
             */
 
             edgeDetect.Image = src.ToBitmap();
- 
-        }
-
-        private void backgroundWorker3_DoWork(object sender, DoWorkEventArgs e)
-        {
-            var bgWorker = (BackgroundWorker)sender;
-
-            while (!bgWorker.CancellationPending)
-            {
-                using (var frameMat = capture.RetrieveMat())
-                {
-                    var frameBitmap = BitmapConverter.ToBitmap(frameMat);
-                    bgWorker.ReportProgress(0, frameBitmap);
-                }
-                Thread.Sleep(33);
-            }
         }
 
         private void backgroundWorker3_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
+            var frameBitmap = (Bitmap)e.UserState;
+            compareImg.Image?.Dispose();
+            
+            Mat src = frameBitmap.ToMat();
+            Mat gray = new Mat();
+            
+            Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY);
+            
+            compareImg.Image = gray.ToBitmap();
+
+        }
+
+        private void VIStart_Click(object sender, EventArgs e)
+        {
+
+            backgroundWorker3.CancelAsync();
+            capture.Read(frame);                     // 현재 화면 저장
+            
+            Mat gray = new Mat();
+            Cv2.CvtColor(frame, gray, ColorConversionCodes.BGR2GRAY);
+
+
+
+
+            ORB orb = ORB.Create();
+            KeyPoint[] kp1, kp2;
+            Mat des1, des2;
+            //orb.DetectAndCompute(src, null, out kp1, des1);
 
         }
 
@@ -267,7 +378,6 @@ namespace Vision_app
                 PM3.TextAlign = ContentAlignment.MiddleCenter;
             }
 
-            slderTimer3.Start();
         }
 
         private void sliderTimer_Tick(object sender, EventArgs e)
@@ -306,24 +416,6 @@ namespace Vision_app
             sliderPanel2.Width = _posSliding;
         }
 
-        private void slderTimer3_Tick(object sender, EventArgs e)
-        {
-            if (checkHide3.Checked == true)
-            {
-                _posSliding -= STEP_SLIDING;
-                if (_posSliding <= MIN_SLIDING_WIDTH)
-                    slderTimer3.Stop();
-            }
-            else
-            {
-                _posSliding += STEP_SLIDING;
-                if (_posSliding >= MAX_SLIDING_WIDTH)
-                    slderTimer3.Stop();
-            }
-
-            sliderPanel3.Width = _posSliding;
-        }
-
         private void button1_Click_1(object sender, EventArgs e)
         {
            
@@ -341,15 +433,7 @@ namespace Vision_app
 
         private void button2_Click(object sender, EventArgs e)
         {
-            tabControl1.SelectedIndex = 0;
 
-            try
-            {
-                backgroundWorker1.RunWorkerAsync();
-                backgroundWorker2.CancelAsync();
-                backgroundWorker3.CancelAsync();
-            }
-            catch { }
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -393,15 +477,7 @@ namespace Vision_app
 
         private void button5_Click(object sender, EventArgs e)
         {
-            tabControl1.SelectedIndex = 1;
 
-            try
-            {
-                backgroundWorker2.RunWorkerAsync();
-                backgroundWorker1.CancelAsync();
-                backgroundWorker3.CancelAsync();
-            }
-            catch { }
         }
 
         private void button8_Click(object sender, EventArgs e)
@@ -417,7 +493,7 @@ namespace Vision_app
             catch { }
         }
 
-        private void button6_Click(object sender, EventArgs e)
+        private void QR3_Click(object sender, EventArgs e)
         {
             tabControl1.SelectedIndex = 0;
 
@@ -425,35 +501,48 @@ namespace Vision_app
             {
                 backgroundWorker1.RunWorkerAsync();
                 backgroundWorker2.CancelAsync();
-                backgroundWorker3.CancelAsync();
-            }
-            catch { }
+                backgroundWorker3.CancelAsync();        
+            } catch { }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void ED3_Click(object sender, EventArgs e)
         {
-            tabControl1.SelectedIndex = 1;
-
-            try
+            tabControl1.SelectedIndex = 1;    
+            
+            try 
             {
                 backgroundWorker2.RunWorkerAsync();
                 backgroundWorker1.CancelAsync();
-                backgroundWorker3.CancelAsync();
+                backgroundWorker3.CancelAsync();                              
             }
-            catch { }
+            catch { }            
         }
 
-        private void button9_Click(object sender, EventArgs e)
+        private void uploadBtn_Click(object sender, EventArgs e)
         {
-            tabControl1.SelectedIndex = 2;
+            string upload_file = string.Empty;
 
-            try
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.InitialDirectory = "C:/";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
             {
-                backgroundWorker3.RunWorkerAsync();
-                backgroundWorker1.CancelAsync();
-                backgroundWorker2.CancelAsync();
+                upload_file= dialog.FileName;
             }
-            catch { }
+            else if (dialog.ShowDialog() == DialogResult.Cancel)
+            {
+                return;
+            }
+
+            Mat gray = new Mat();
+            var bitmap  = Bitmap.FromFile(upload_file);
+            Bitmap bitmap1 = new Bitmap(bitmap);
+            Mat src = BitmapConverter.ToMat(bitmap1);
+
+            Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY);
+            masterImg.Image = gray.ToBitmap();
+            masterImg.SizeMode = PictureBoxSizeMode.StretchImage;
+
         }
 
     }
