@@ -54,7 +54,7 @@
             this.VIResult = new System.Windows.Forms.TextBox();
             this.VIStart = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.compareImg = new System.Windows.Forms.PictureBox();
+            this.comparedImg = new System.Windows.Forms.PictureBox();
             this.masterImg = new System.Windows.Forms.PictureBox();
             this.sliderPanel3 = new System.Windows.Forms.Panel();
             this.PM3 = new System.Windows.Forms.Button();
@@ -71,6 +71,7 @@
             this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
             this.sliderTimer4 = new System.Windows.Forms.Timer(this.components);
+            this.compareImg = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.currentImage)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.sliderTimer3.SuspendLayout();
@@ -80,10 +81,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.edgeDetect)).BeginInit();
             this.sliderPanel2.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.compareImg)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.comparedImg)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.masterImg)).BeginInit();
             this.sliderPanel3.SuspendLayout();
             this.tabPage4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.compareImg)).BeginInit();
             this.SuspendLayout();
             // 
             // currentImage
@@ -266,7 +268,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("굴림", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label1.Location = new System.Drawing.Point(390, 48);
+            this.label1.Location = new System.Drawing.Point(405, 38);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(176, 27);
             this.label1.TabIndex = 2;
@@ -274,7 +276,7 @@
             // 
             // edgeDetect
             // 
-            this.edgeDetect.Location = new System.Drawing.Point(395, 78);
+            this.edgeDetect.Location = new System.Drawing.Point(410, 68);
             this.edgeDetect.Name = "edgeDetect";
             this.edgeDetect.Size = new System.Drawing.Size(640, 480);
             this.edgeDetect.TabIndex = 1;
@@ -369,11 +371,12 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.compareImg);
             this.tabPage1.Controls.Add(this.uploadBtn);
             this.tabPage1.Controls.Add(this.VIResult);
             this.tabPage1.Controls.Add(this.VIStart);
             this.tabPage1.Controls.Add(this.label2);
-            this.tabPage1.Controls.Add(this.compareImg);
+            this.tabPage1.Controls.Add(this.comparedImg);
             this.tabPage1.Controls.Add(this.masterImg);
             this.tabPage1.Controls.Add(this.sliderPanel3);
             this.tabPage1.Location = new System.Drawing.Point(4, 24);
@@ -387,7 +390,7 @@
             // uploadBtn
             // 
             this.uploadBtn.Font = new System.Drawing.Font("굴림", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.uploadBtn.Location = new System.Drawing.Point(377, 56);
+            this.uploadBtn.Location = new System.Drawing.Point(377, 16);
             this.uploadBtn.Name = "uploadBtn";
             this.uploadBtn.Size = new System.Drawing.Size(94, 23);
             this.uploadBtn.TabIndex = 5;
@@ -397,7 +400,7 @@
             // 
             // VIResult
             // 
-            this.VIResult.Location = new System.Drawing.Point(393, 472);
+            this.VIResult.Location = new System.Drawing.Point(231, 411);
             this.VIResult.Multiline = true;
             this.VIResult.Name = "VIResult";
             this.VIResult.Size = new System.Drawing.Size(318, 103);
@@ -405,7 +408,7 @@
             // 
             // VIStart
             // 
-            this.VIStart.Location = new System.Drawing.Point(747, 472);
+            this.VIStart.Location = new System.Drawing.Point(612, 411);
             this.VIStart.Name = "VIStart";
             this.VIStart.Size = new System.Drawing.Size(233, 82);
             this.VIStart.TabIndex = 4;
@@ -417,23 +420,23 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label2.Location = new System.Drawing.Point(228, 60);
+            this.label2.Location = new System.Drawing.Point(228, 20);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(117, 16);
             this.label2.TabIndex = 3;
             this.label2.Text = "Master Image";
             // 
-            // compareImg
+            // comparedImg
             // 
-            this.compareImg.Location = new System.Drawing.Point(747, 85);
-            this.compareImg.Name = "compareImg";
-            this.compareImg.Size = new System.Drawing.Size(480, 360);
-            this.compareImg.TabIndex = 2;
-            this.compareImg.TabStop = false;
+            this.comparedImg.Location = new System.Drawing.Point(747, 45);
+            this.comparedImg.Name = "comparedImg";
+            this.comparedImg.Size = new System.Drawing.Size(480, 360);
+            this.comparedImg.TabIndex = 2;
+            this.comparedImg.TabStop = false;
             // 
             // masterImg
             // 
-            this.masterImg.Location = new System.Drawing.Point(231, 85);
+            this.masterImg.Location = new System.Drawing.Point(231, 45);
             this.masterImg.Name = "masterImg";
             this.masterImg.Size = new System.Drawing.Size(480, 360);
             this.masterImg.TabIndex = 1;
@@ -624,6 +627,15 @@
             // 
             this.sliderTimer4.Interval = 10;
             // 
+            // compareImg
+            // 
+            this.compareImg.Location = new System.Drawing.Point(947, 411);
+            this.compareImg.Name = "compareImg";
+            this.compareImg.Size = new System.Drawing.Size(280, 210);
+            this.compareImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.compareImg.TabIndex = 6;
+            this.compareImg.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -646,10 +658,11 @@
             this.sliderPanel2.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.compareImg)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.comparedImg)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.masterImg)).EndInit();
             this.sliderPanel3.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.compareImg)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -686,7 +699,7 @@
         private System.Windows.Forms.Panel sliderPanel3;
         private System.Windows.Forms.CheckBox checkHide3;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.PictureBox compareImg;
+        private System.Windows.Forms.PictureBox comparedImg;
         private System.Windows.Forms.PictureBox masterImg;
         private System.Windows.Forms.TextBox VIResult;
         private System.Windows.Forms.Button VIStart;
@@ -698,6 +711,7 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Timer sliderTimer4;
+        private System.Windows.Forms.PictureBox compareImg;
     }
 }
 

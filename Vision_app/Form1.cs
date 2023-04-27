@@ -29,6 +29,8 @@ namespace Vision_app
         Mat frame = new Mat();
         static BarcodeReader barcodeReader = new BarcodeReader();
 
+        static string upload_file = string.Empty;
+
         //슬라이딩 메뉴의 최대, 최소 폭 크기
         const int MAX_SLIDING_WIDTH = 200;
         const int MIN_SLIDING_WIDTH = 50;
@@ -48,16 +50,16 @@ namespace Vision_app
         public Form1()
         {
             InitializeComponent();
-            compareImg.MouseWheel += new MouseEventHandler(compareImg_MouseWheel);
-            compareImg.SizeMode = PictureBoxSizeMode.StretchImage;
+            comparedImg.MouseWheel += new MouseEventHandler(compareImg_MouseWheel);
+            comparedImg.SizeMode = PictureBoxSizeMode.StretchImage;
 
             // VICapturedImg = new Bitmap(@"E:\01.bmp");
-            imgPoint = new System.Drawing.Point(compareImg.Width / 2, compareImg.Height / 2);
-            imgRect = new Rectangle(0, 0, compareImg.Width, compareImg.Height);
+            imgPoint = new System.Drawing.Point(comparedImg.Width / 2, comparedImg.Height / 2);
+            imgRect = new Rectangle(0, 0, comparedImg.Width, comparedImg.Height);
             ratio = 1.0;
             clickPoint = imgPoint;
 
-            compareImg.Invalidate();
+            comparedImg.Invalidate();
 
         }
         
@@ -71,8 +73,8 @@ namespace Vision_app
                 ratio *= 1.1F;
                 if (ratio > 100.0) ratio = 100.0f;
 
-                imgRect.Width = (int)Math.Round(compareImg.Width * ratio);
-                imgRect.Height = (int)Math.Round(compareImg.Height * ratio);
+                imgRect.Width = (int)Math.Round(comparedImg.Width * ratio);
+                imgRect.Height = (int)Math.Round(comparedImg.Height * ratio);
                 imgRect.X = -(int)Math.Round(1.1F * (imgPoint.X - imgRect.X) - imgPoint.X);
                 imgRect.Y = -(int)Math.Round(1.1F * (imgPoint.Y - imgRect.Y) - imgPoint.Y);
             }
@@ -81,18 +83,18 @@ namespace Vision_app
                 ratio *= 0.9F;
                 if (ratio < 1) ratio = 1;
 
-                imgRect.Width = (int)Math.Round(compareImg.Width * ratio);
-                imgRect.Height = (int)Math.Round(compareImg.Height * ratio);
+                imgRect.Width = (int)Math.Round(comparedImg.Width * ratio);
+                imgRect.Height = (int)Math.Round(comparedImg.Height * ratio);
                 imgRect.X = -(int)Math.Round(0.9F * (imgPoint.X - imgRect.X) - imgPoint.X);
                 imgRect.Y = -(int)Math.Round(0.9F * (imgPoint.Y - imgRect.Y) - imgPoint.Y);
             }
 
             if (imgRect.X > 0) imgRect.X = 0;             // 범위지정
             if (imgRect.Y > 0) imgRect.Y = 0;
-            if (imgRect.X + imgRect.Width < compareImg.Width) imgRect.X = compareImg.Width - imgRect.Width;
-            if (imgRect.Y + imgRect.Height < compareImg.Height) imgRect.Y = compareImg.Height - imgRect.Height;
+            if (imgRect.X + imgRect.Width < comparedImg.Width) imgRect.X = comparedImg.Width - imgRect.Width;
+            if (imgRect.Y + imgRect.Height < comparedImg.Height) imgRect.Y = comparedImg.Height - imgRect.Height;
 
-            compareImg.Invalidate();  // Paint 이벤트가 일어날 때 처리해서 이미지를 갱신
+            comparedImg.Invalidate();  // Paint 이벤트가 일어날 때 처리해서 이미지를 갱신
         }
         /*
         private void compareImg_Paint(object sender, PaintEventArgs e)
@@ -134,8 +136,6 @@ namespace Vision_app
             compareImg.Invalidate();
         }
         */
-
-
 
 
         private void Form1_Load(object sender, EventArgs e)
@@ -287,20 +287,63 @@ namespace Vision_app
         private void VIStart_Click(object sender, EventArgs e)
         {
 
-            backgroundWorker3.CancelAsync();
             capture.Read(frame);                     // 현재 화면 저장
-            
+
+            Mat src = Cv2.ImRead(upload_file);
+            Cv2.CvtColor(src, src, ColorConversionCodes.BGR2GRAY);
+
             Mat gray = new Mat();
-            Cv2.CvtColor(frame, gray, ColorConversionCodes.BGR2GRAY);
-
-
-
-
+            Cv2.CvtColor(frame, gray, ColorConversionCodes.BGR2GRAY); // 현재 화면 캡처 후 그레이화
+            
             ORB orb = ORB.Create();
-            KeyPoint[] kp1, kp2;
-            Mat des1, des2;
-            //orb.DetectAndCompute(src, null, out kp1, des1);
+            KeyPoint[] kp1;
+            KeyPoint[] kp2;
+            Mat des1 = new Mat();
+            Mat des2 = new Mat();
 
+            orb.DetectAndCompute(src, null, out kp1, des1);
+            orb.DetectAndCompute(gray, null, out kp2, des2);
+
+            BFMatcher bf = new BFMatcher(NormTypes.Hamming, true);
+            DMatch[] matches = bf.Match(des1, des2);
+            Array.Sort(matches, (x, y) => x.Distance.CompareTo(y.Distance));
+            DMatch[] topMatches = matches.Take(100).ToArray();
+
+
+            // 유사도를 계산
+            double sumofDistance = 0.0;        
+            for (int i = 0; i <topMatches.Length; i++)
+            {
+                sumofDistance += topMatches[i].Distance;
+            }
+            double meanDistance = sumofDistance / topMatches.Length;
+
+            double similarity = 1.0 / meanDistance;
+
+            List<Point2f> srcPoints = new List<Point2f>();
+            List<Point2f> dstPoints = new List<Point2f>();
+
+            for (int i = 0; i < topMatches.Length; i++)
+            {
+                srcPoints.Add(kp1[topMatches[i].QueryIdx].Pt);
+                dstPoints.Add(kp2[topMatches[i].TrainIdx].Pt);
+            }
+
+            KeyPoint[] topKeypoints1 = kp1.OrderByDescending(kp => kp.Response).Take(100).ToArray();
+            KeyPoint[] topKeypoints2 = kp2.OrderByDescending(kp => kp.Response).Take(100).ToArray();
+
+            Mat result1= new Mat();
+            Mat result2= new Mat();
+
+            Cv2.DrawKeypoints(src, topKeypoints1, result1, new Scalar(0, 0, 255), DrawMatchesFlags.Default);
+            Cv2.DrawKeypoints(gray, topKeypoints2, result2, new Scalar(0, 0, 255), DrawMatchesFlags.Default);
+
+            masterImg.Image = result1.ToBitmap();
+            comparedImg.Image = result2.ToBitmap();
+            VIResult.Text = similarity.ToString();
+
+            Thread.Sleep(1000);
+            
         }
 
         private void checkHide_CheckedChanged(object sender, EventArgs e)
@@ -520,7 +563,7 @@ namespace Vision_app
 
         private void uploadBtn_Click(object sender, EventArgs e)
         {
-            string upload_file = string.Empty;
+            upload_file = string.Empty;
 
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.InitialDirectory = "C:/";
@@ -535,8 +578,8 @@ namespace Vision_app
             }
 
             Mat gray = new Mat();
-            var bitmap  = Bitmap.FromFile(upload_file);
-            Bitmap bitmap1 = new Bitmap(bitmap);
+            var bitmapFromFile  = Bitmap.FromFile(upload_file);
+            Bitmap bitmap1 = new Bitmap(bitmapFromFile);
             Mat src = BitmapConverter.ToMat(bitmap1);
 
             Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY);
