@@ -50,7 +50,7 @@ namespace Vision_app
         public Form1()
         {
             InitializeComponent();
-            comparedImg.MouseWheel += new MouseEventHandler(compareImg_MouseWheel);
+            comparedImg.MouseWheel += new MouseEventHandler(comparedImg_MouseWheel);
             comparedImg.SizeMode = PictureBoxSizeMode.StretchImage;
 
             // VICapturedImg = new Bitmap(@"E:\01.bmp");
@@ -63,7 +63,7 @@ namespace Vision_app
 
         }
         
-        private void compareImg_MouseWheel(object sender, MouseEventArgs e)
+        private void comparedImg_MouseWheel(object sender, MouseEventArgs e)
         {
             int lines = e.Delta * SystemInformation.MouseWheelScrollLines / 120;
             PictureBox pb = (PictureBox)sender;
@@ -96,46 +96,45 @@ namespace Vision_app
 
             comparedImg.Invalidate();  // Paint 이벤트가 일어날 때 처리해서 이미지를 갱신
         }
-        /*
-        private void compareImg_Paint(object sender, PaintEventArgs e)
+        
+        private void comparedImg_Paint(object sender, PaintEventArgs e)
         {
-            if (compareImg.Image != null)
+            if (comparedImg.Image != null)
             {
                 e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
-                e.Graphics.DrawImage(compareImg.Image, imgRect);   // 새로 이미지를 그린다
-                compareImg.Focus();
+                e.Graphics.DrawImage(comparedImg.Image, imgRect);   // 새로 이미지를 그린다
+                comparedImg.Focus();
             }
         }
 
-        private void compareImg_MouseDown(object sender, MouseEventArgs e)
+        private void comparedImg_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
                 clickPoint = new System.Drawing.Point(e.X, e.Y);
             }
-            compareImg.Invalidate();
+            comparedImg.Invalidate();
         }
 
-        private void compareImg_MouseMove(object sender, MouseEventArgs e)
+        private void comparedImg_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
                 imgRect.X = imgRect.X + (int)Math.Round((double)(e.X - clickPoint.X) / 5);
                 if (imgRect.X >= 0) imgRect.X = 0;
-                if (Math.Abs(imgRect.X) >= Math.Abs(imgRect.Width - compareImg.Width)) imgRect.X = -(imgRect.Width - compareImg.Width);
+                if (Math.Abs(imgRect.X) >= Math.Abs(imgRect.Width - comparedImg.Width)) imgRect.X = -(imgRect.Width - comparedImg.Width);
                 imgRect.Y = imgRect.Y + (int)Math.Round((double)(e.Y - clickPoint.Y) / 5);
                 if (imgRect.Y >= 0) imgRect.Y = 0;
-                if (Math.Abs(imgRect.Y) >= Math.Abs(imgRect.Height - compareImg.Height)) imgRect.Y = -(imgRect.Height - compareImg.Height);
+                if (Math.Abs(imgRect.Y) >= Math.Abs(imgRect.Height - comparedImg.Height)) imgRect.Y = -(imgRect.Height - comparedImg.Height);
             }
             else
             {
                 LastPoint = e.Location;
             }
 
-            compareImg.Invalidate();
+            comparedImg.Invalidate();
         }
-        */
 
 
         private void Form1_Load(object sender, EventArgs e)
@@ -292,34 +291,40 @@ namespace Vision_app
             Mat src = Cv2.ImRead(upload_file);
             Cv2.CvtColor(src, src, ColorConversionCodes.BGR2GRAY);
 
-            Mat gray = new Mat();
-            Cv2.CvtColor(frame, gray, ColorConversionCodes.BGR2GRAY); // 현재 화면 캡처 후 그레이화
+            Mat target = new Mat();
+            Cv2.CvtColor(frame, target, ColorConversionCodes.BGR2GRAY); // 현재 화면 캡처 후 그레이화
             
-            ORB orb = ORB.Create();
-            KeyPoint[] kp1;
-            KeyPoint[] kp2;
+            ORB orb = ORB.Create(nFeatures: 40000, scaleFactor: 1.2f, nLevels: 8, edgeThreshold: 31, 
+                                 firstLevel: 0, wtaK: 2, scoreType: ORBScoreType.Harris, patchSize: 31, fastThreshold: 20);
+
+            KeyPoint[] kp1, kp2;
             Mat des1 = new Mat();
             Mat des2 = new Mat();
 
             orb.DetectAndCompute(src, null, out kp1, des1);
-            orb.DetectAndCompute(gray, null, out kp2, des2);
+            orb.DetectAndCompute(target, null, out kp2, des2);
 
-            BFMatcher bf = new BFMatcher(NormTypes.Hamming, true);
+            BFMatcher bf = new BFMatcher(NormTypes.Hamming, crossCheck: true);
             DMatch[] matches = bf.Match(des1, des2);
             Array.Sort(matches, (x, y) => x.Distance.CompareTo(y.Distance));
             DMatch[] topMatches = matches.Take(100).ToArray();
 
-
-            // 유사도를 계산
-            double sumofDistance = 0.0;        
-            for (int i = 0; i <topMatches.Length; i++)
+            /*
+            for (int i = 0; i < 100; i++)
             {
-                sumofDistance += topMatches[i].Distance;
+                int idx = matches[i].QueryIdx;
+                Point2f pt = kp1[idx].Pt;
+                Cv2.Circle(src, (int)pt.X, (int)pt.Y, 3, Scalar.Blue, 3);
             }
-            double meanDistance = sumofDistance / topMatches.Length;
 
-            double similarity = 1.0 / meanDistance;
-
+            for (int i = 0; i < 100; i++)
+            {
+                int idx = matches[i].QueryIdx;
+                Point2f pt = kp2[idx].Pt;
+                Cv2.Circle(target, (int)pt.X, (int)pt.Y, 3, Scalar.Blue, 3);
+            }
+            */
+            
             List<Point2f> srcPoints = new List<Point2f>();
             List<Point2f> dstPoints = new List<Point2f>();
 
@@ -332,11 +337,22 @@ namespace Vision_app
             KeyPoint[] topKeypoints1 = kp1.OrderByDescending(kp => kp.Response).Take(100).ToArray();
             KeyPoint[] topKeypoints2 = kp2.OrderByDescending(kp => kp.Response).Take(100).ToArray();
 
-            Mat result1= new Mat();
-            Mat result2= new Mat();
+            Mat result1 = new Mat();
+            Mat result2 = new Mat();
 
             Cv2.DrawKeypoints(src, topKeypoints1, result1, new Scalar(0, 0, 255), DrawMatchesFlags.Default);
-            Cv2.DrawKeypoints(gray, topKeypoints2, result2, new Scalar(0, 0, 255), DrawMatchesFlags.Default);
+            Cv2.DrawKeypoints(target, topKeypoints2, result2, new Scalar(0, 0, 255), DrawMatchesFlags.Default);
+            
+
+            // 유사도를 계산
+            double sumofDistance = 0.0;        
+            for (int i = 0; i <topMatches.Length; i++)
+            {
+                sumofDistance += topMatches[i].Distance;
+            }
+            double meanDistance = sumofDistance / topMatches.Length;
+
+            double similarity = 1.0 / meanDistance;
 
             masterImg.Image = result1.ToBitmap();
             comparedImg.Image = result2.ToBitmap();

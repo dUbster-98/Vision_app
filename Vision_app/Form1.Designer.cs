@@ -433,6 +433,9 @@
             this.comparedImg.Size = new System.Drawing.Size(480, 360);
             this.comparedImg.TabIndex = 2;
             this.comparedImg.TabStop = false;
+            this.comparedImg.Paint += new System.Windows.Forms.PaintEventHandler(this.comparedImg_Paint);
+            this.comparedImg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.comparedImg_MouseDown);
+            this.comparedImg.MouseMove += new System.Windows.Forms.MouseEventHandler(this.comparedImg_MouseMove);
             // 
             // masterImg
             // 
