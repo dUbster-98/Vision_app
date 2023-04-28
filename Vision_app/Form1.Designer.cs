@@ -37,6 +37,7 @@
             this.capturedImg = new System.Windows.Forms.Label();
             this.capturedImage = new System.Windows.Forms.PictureBox();
             this.sliderPanel = new System.Windows.Forms.Panel();
+            this.EF1 = new System.Windows.Forms.Button();
             this.PM1 = new System.Windows.Forms.Button();
             this.checkHide = new System.Windows.Forms.CheckBox();
             this.ED1 = new System.Windows.Forms.Button();
@@ -45,11 +46,13 @@
             this.label1 = new System.Windows.Forms.Label();
             this.edgeDetect = new System.Windows.Forms.PictureBox();
             this.sliderPanel2 = new System.Windows.Forms.Panel();
+            this.EF2 = new System.Windows.Forms.Button();
             this.PM2 = new System.Windows.Forms.Button();
             this.checkHide2 = new System.Windows.Forms.CheckBox();
             this.ED2 = new System.Windows.Forms.Button();
             this.QR2 = new System.Windows.Forms.Button();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.compareImg = new System.Windows.Forms.PictureBox();
             this.uploadBtn = new System.Windows.Forms.Button();
             this.VIResult = new System.Windows.Forms.TextBox();
             this.VIStart = new System.Windows.Forms.Button();
@@ -57,21 +60,28 @@
             this.comparedImg = new System.Windows.Forms.PictureBox();
             this.masterImg = new System.Windows.Forms.PictureBox();
             this.sliderPanel3 = new System.Windows.Forms.Panel();
+            this.EF3 = new System.Windows.Forms.Button();
             this.PM3 = new System.Windows.Forms.Button();
             this.ED3 = new System.Windows.Forms.Button();
             this.QR3 = new System.Windows.Forms.Button();
             this.checkHide3 = new System.Windows.Forms.CheckBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.button4 = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.sliderPanel4 = new System.Windows.Forms.Panel();
+            this.checkHide4 = new System.Windows.Forms.CheckBox();
+            this.EF4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.sliderTimer = new System.Windows.Forms.Timer(this.components);
-            this.sliderTimer2 = new System.Windows.Forms.Timer(this.components);
             this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker3 = new System.ComponentModel.BackgroundWorker();
+            this.sliderTimer5 = new System.Windows.Forms.Timer(this.components);
             this.sliderTimer4 = new System.Windows.Forms.Timer(this.components);
-            this.compareImg = new System.Windows.Forms.PictureBox();
+            this.sliderTimer2 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.currentImage)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.sliderTimer3.SuspendLayout();
@@ -81,11 +91,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.edgeDetect)).BeginInit();
             this.sliderPanel2.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.compareImg)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.comparedImg)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.masterImg)).BeginInit();
             this.sliderPanel3.SuspendLayout();
             this.tabPage4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.compareImg)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.sliderPanel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // currentImage
@@ -167,6 +179,7 @@
             // sliderPanel
             // 
             this.sliderPanel.BackColor = System.Drawing.Color.Gray;
+            this.sliderPanel.Controls.Add(this.EF1);
             this.sliderPanel.Controls.Add(this.PM1);
             this.sliderPanel.Controls.Add(this.checkHide);
             this.sliderPanel.Controls.Add(this.ED1);
@@ -177,6 +190,24 @@
             this.sliderPanel.Size = new System.Drawing.Size(200, 649);
             this.sliderPanel.TabIndex = 7;
             // 
+            // EF1
+            // 
+            this.EF1.BackColor = System.Drawing.Color.Gray;
+            this.EF1.FlatAppearance.BorderSize = 0;
+            this.EF1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.EF1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
+            this.EF1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.EF1.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.EF1.ForeColor = System.Drawing.Color.White;
+            this.EF1.Location = new System.Drawing.Point(0, 378);
+            this.EF1.Name = "EF1";
+            this.EF1.Size = new System.Drawing.Size(200, 120);
+            this.EF1.TabIndex = 21;
+            this.EF1.TabStop = false;
+            this.EF1.Text = "Edge Finder";
+            this.EF1.UseVisualStyleBackColor = false;
+            this.EF1.Click += new System.EventHandler(this.EF1_Click);
+            // 
             // PM1
             // 
             this.PM1.BackColor = System.Drawing.Color.Gray;
@@ -186,9 +217,9 @@
             this.PM1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.PM1.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.PM1.ForeColor = System.Drawing.Color.White;
-            this.PM1.Location = new System.Drawing.Point(0, 272);
+            this.PM1.Location = new System.Drawing.Point(0, 252);
             this.PM1.Name = "PM1";
-            this.PM1.Size = new System.Drawing.Size(200, 130);
+            this.PM1.Size = new System.Drawing.Size(200, 120);
             this.PM1.TabIndex = 15;
             this.PM1.TabStop = false;
             this.PM1.Text = "Pattern Matching";
@@ -224,9 +255,9 @@
             this.ED1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ED1.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.ED1.ForeColor = System.Drawing.Color.White;
-            this.ED1.Location = new System.Drawing.Point(0, 136);
+            this.ED1.Location = new System.Drawing.Point(0, 126);
             this.ED1.Name = "ED1";
-            this.ED1.Size = new System.Drawing.Size(200, 130);
+            this.ED1.Size = new System.Drawing.Size(200, 120);
             this.ED1.TabIndex = 9;
             this.ED1.TabStop = false;
             this.ED1.Text = "Edge Detecting";
@@ -244,12 +275,11 @@
             this.QR1.ForeColor = System.Drawing.Color.White;
             this.QR1.Location = new System.Drawing.Point(0, 0);
             this.QR1.Name = "QR1";
-            this.QR1.Size = new System.Drawing.Size(200, 130);
+            this.QR1.Size = new System.Drawing.Size(200, 120);
             this.QR1.TabIndex = 8;
             this.QR1.TabStop = false;
             this.QR1.Text = "QRCode Reading";
             this.QR1.UseVisualStyleBackColor = false;
-            this.QR1.Click += new System.EventHandler(this.button2_Click);
             // 
             // tabPage3
             // 
@@ -268,15 +298,15 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("굴림", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label1.Location = new System.Drawing.Point(405, 38);
+            this.label1.Location = new System.Drawing.Point(375, 46);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(176, 27);
+            this.label1.Size = new System.Drawing.Size(214, 27);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Edge Detect";
+            this.label1.Text = "Contour Detect";
             // 
             // edgeDetect
             // 
-            this.edgeDetect.Location = new System.Drawing.Point(410, 68);
+            this.edgeDetect.Location = new System.Drawing.Point(380, 80);
             this.edgeDetect.Name = "edgeDetect";
             this.edgeDetect.Size = new System.Drawing.Size(640, 480);
             this.edgeDetect.TabIndex = 1;
@@ -285,6 +315,7 @@
             // sliderPanel2
             // 
             this.sliderPanel2.BackColor = System.Drawing.Color.Gray;
+            this.sliderPanel2.Controls.Add(this.EF2);
             this.sliderPanel2.Controls.Add(this.PM2);
             this.sliderPanel2.Controls.Add(this.checkHide2);
             this.sliderPanel2.Controls.Add(this.ED2);
@@ -295,6 +326,24 @@
             this.sliderPanel2.Size = new System.Drawing.Size(200, 649);
             this.sliderPanel2.TabIndex = 0;
             // 
+            // EF2
+            // 
+            this.EF2.BackColor = System.Drawing.Color.Gray;
+            this.EF2.FlatAppearance.BorderSize = 0;
+            this.EF2.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.EF2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
+            this.EF2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.EF2.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.EF2.ForeColor = System.Drawing.Color.White;
+            this.EF2.Location = new System.Drawing.Point(0, 378);
+            this.EF2.Name = "EF2";
+            this.EF2.Size = new System.Drawing.Size(200, 120);
+            this.EF2.TabIndex = 21;
+            this.EF2.TabStop = false;
+            this.EF2.Text = "Edge Finder";
+            this.EF2.UseVisualStyleBackColor = false;
+            this.EF2.Click += new System.EventHandler(this.EF2_Click);
+            // 
             // PM2
             // 
             this.PM2.BackColor = System.Drawing.Color.Gray;
@@ -304,9 +353,9 @@
             this.PM2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.PM2.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.PM2.ForeColor = System.Drawing.Color.White;
-            this.PM2.Location = new System.Drawing.Point(0, 272);
+            this.PM2.Location = new System.Drawing.Point(0, 252);
             this.PM2.Name = "PM2";
-            this.PM2.Size = new System.Drawing.Size(200, 130);
+            this.PM2.Size = new System.Drawing.Size(200, 120);
             this.PM2.TabIndex = 14;
             this.PM2.TabStop = false;
             this.PM2.Text = "Pattern Matching";
@@ -342,14 +391,13 @@
             this.ED2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ED2.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.ED2.ForeColor = System.Drawing.Color.White;
-            this.ED2.Location = new System.Drawing.Point(0, 136);
+            this.ED2.Location = new System.Drawing.Point(0, 126);
             this.ED2.Name = "ED2";
-            this.ED2.Size = new System.Drawing.Size(200, 130);
+            this.ED2.Size = new System.Drawing.Size(200, 120);
             this.ED2.TabIndex = 12;
             this.ED2.TabStop = false;
             this.ED2.Text = "Edge Detecting";
             this.ED2.UseVisualStyleBackColor = false;
-            this.ED2.Click += new System.EventHandler(this.button5_Click);
             // 
             // QR2
             // 
@@ -362,7 +410,7 @@
             this.QR2.ForeColor = System.Drawing.Color.White;
             this.QR2.Location = new System.Drawing.Point(0, 0);
             this.QR2.Name = "QR2";
-            this.QR2.Size = new System.Drawing.Size(200, 130);
+            this.QR2.Size = new System.Drawing.Size(200, 120);
             this.QR2.TabIndex = 11;
             this.QR2.TabStop = false;
             this.QR2.Text = "QRCode Reading";
@@ -386,6 +434,15 @@
             this.tabPage1.TabIndex = 3;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // compareImg
+            // 
+            this.compareImg.Location = new System.Drawing.Point(947, 411);
+            this.compareImg.Name = "compareImg";
+            this.compareImg.Size = new System.Drawing.Size(280, 210);
+            this.compareImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.compareImg.TabIndex = 6;
+            this.compareImg.TabStop = false;
             // 
             // uploadBtn
             // 
@@ -448,6 +505,7 @@
             // sliderPanel3
             // 
             this.sliderPanel3.BackColor = System.Drawing.Color.Gray;
+            this.sliderPanel3.Controls.Add(this.EF3);
             this.sliderPanel3.Controls.Add(this.PM3);
             this.sliderPanel3.Controls.Add(this.ED3);
             this.sliderPanel3.Controls.Add(this.QR3);
@@ -458,6 +516,24 @@
             this.sliderPanel3.Size = new System.Drawing.Size(200, 649);
             this.sliderPanel3.TabIndex = 0;
             // 
+            // EF3
+            // 
+            this.EF3.BackColor = System.Drawing.Color.Gray;
+            this.EF3.FlatAppearance.BorderSize = 0;
+            this.EF3.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.EF3.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
+            this.EF3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.EF3.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.EF3.ForeColor = System.Drawing.Color.White;
+            this.EF3.Location = new System.Drawing.Point(0, 378);
+            this.EF3.Name = "EF3";
+            this.EF3.Size = new System.Drawing.Size(200, 120);
+            this.EF3.TabIndex = 20;
+            this.EF3.TabStop = false;
+            this.EF3.Text = "Edge Finder";
+            this.EF3.UseVisualStyleBackColor = false;
+            this.EF3.Click += new System.EventHandler(this.EF3_Click);
+            // 
             // PM3
             // 
             this.PM3.BackColor = System.Drawing.Color.Gray;
@@ -467,9 +543,9 @@
             this.PM3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.PM3.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.PM3.ForeColor = System.Drawing.Color.White;
-            this.PM3.Location = new System.Drawing.Point(0, 272);
+            this.PM3.Location = new System.Drawing.Point(0, 252);
             this.PM3.Name = "PM3";
-            this.PM3.Size = new System.Drawing.Size(200, 130);
+            this.PM3.Size = new System.Drawing.Size(200, 120);
             this.PM3.TabIndex = 19;
             this.PM3.TabStop = false;
             this.PM3.Text = "Pattern Matching";
@@ -484,9 +560,9 @@
             this.ED3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ED3.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.ED3.ForeColor = System.Drawing.Color.White;
-            this.ED3.Location = new System.Drawing.Point(0, 136);
+            this.ED3.Location = new System.Drawing.Point(0, 126);
             this.ED3.Name = "ED3";
-            this.ED3.Size = new System.Drawing.Size(200, 130);
+            this.ED3.Size = new System.Drawing.Size(200, 120);
             this.ED3.TabIndex = 18;
             this.ED3.TabStop = false;
             this.ED3.Text = "Edge Detecting";
@@ -504,7 +580,7 @@
             this.QR3.ForeColor = System.Drawing.Color.White;
             this.QR3.Location = new System.Drawing.Point(0, 0);
             this.QR3.Name = "QR3";
-            this.QR3.Size = new System.Drawing.Size(200, 130);
+            this.QR3.Size = new System.Drawing.Size(200, 120);
             this.QR3.TabIndex = 17;
             this.QR3.TabStop = false;
             this.QR3.Text = "QRCode Reading";
@@ -533,9 +609,10 @@
             // 
             // tabPage4
             // 
-            this.tabPage4.Controls.Add(this.button1);
-            this.tabPage4.Controls.Add(this.button2);
-            this.tabPage4.Controls.Add(this.button3);
+            this.tabPage4.Controls.Add(this.label3);
+            this.tabPage4.Controls.Add(this.button4);
+            this.tabPage4.Controls.Add(this.pictureBox1);
+            this.tabPage4.Controls.Add(this.sliderPanel4);
             this.tabPage4.Location = new System.Drawing.Point(4, 24);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
@@ -544,39 +621,84 @@
             this.tabPage4.Text = "tabPage4";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // label3
             // 
-            this.button1.BackColor = System.Drawing.Color.Gray;
-            this.button1.FlatAppearance.BorderSize = 0;
-            this.button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
-            this.button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(6, 278);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(200, 130);
-            this.button1.TabIndex = 22;
-            this.button1.TabStop = false;
-            this.button1.Text = "Pattern Matching";
-            this.button1.UseVisualStyleBackColor = false;
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("굴림", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label3.Location = new System.Drawing.Point(375, 44);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(189, 29);
+            this.label3.TabIndex = 25;
+            this.label3.Text = "Edge Finder";
             // 
-            // button2
+            // button4
             // 
-            this.button2.BackColor = System.Drawing.Color.Gray;
-            this.button2.FlatAppearance.BorderSize = 0;
-            this.button2.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
-            this.button2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
-            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button2.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.button2.ForeColor = System.Drawing.Color.White;
-            this.button2.Location = new System.Drawing.Point(6, 142);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(200, 130);
-            this.button2.TabIndex = 21;
-            this.button2.TabStop = false;
-            this.button2.Text = "Edge Detecting";
-            this.button2.UseVisualStyleBackColor = false;
+            this.button4.Location = new System.Drawing.Point(1038, 88);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(137, 58);
+            this.button4.TabIndex = 24;
+            this.button4.Text = "Upload";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click_1);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(380, 80);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(640, 480);
+            this.pictureBox1.TabIndex = 23;
+            this.pictureBox1.TabStop = false;
+            // 
+            // sliderPanel4
+            // 
+            this.sliderPanel4.BackColor = System.Drawing.Color.Gray;
+            this.sliderPanel4.Controls.Add(this.checkHide4);
+            this.sliderPanel4.Controls.Add(this.EF4);
+            this.sliderPanel4.Controls.Add(this.button3);
+            this.sliderPanel4.Controls.Add(this.button2);
+            this.sliderPanel4.Controls.Add(this.button1);
+            this.sliderPanel4.Dock = System.Windows.Forms.DockStyle.Left;
+            this.sliderPanel4.Location = new System.Drawing.Point(3, 3);
+            this.sliderPanel4.Name = "sliderPanel4";
+            this.sliderPanel4.Size = new System.Drawing.Size(200, 649);
+            this.sliderPanel4.TabIndex = 27;
+            // 
+            // checkHide4
+            // 
+            this.checkHide4.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkHide4.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.checkHide4.FlatAppearance.BorderSize = 0;
+            this.checkHide4.FlatAppearance.CheckedBackColor = System.Drawing.Color.Gray;
+            this.checkHide4.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.checkHide4.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
+            this.checkHide4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.checkHide4.Font = new System.Drawing.Font("굴림", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.checkHide4.ForeColor = System.Drawing.Color.White;
+            this.checkHide4.Location = new System.Drawing.Point(0, 519);
+            this.checkHide4.Name = "checkHide4";
+            this.checkHide4.Size = new System.Drawing.Size(200, 130);
+            this.checkHide4.TabIndex = 27;
+            this.checkHide4.Text = "<";
+            this.checkHide4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkHide4.UseVisualStyleBackColor = true;
+            this.checkHide4.CheckedChanged += new System.EventHandler(this.checkHide4_CheckedChanged);
+            // 
+            // EF4
+            // 
+            this.EF4.BackColor = System.Drawing.Color.Gray;
+            this.EF4.FlatAppearance.BorderSize = 0;
+            this.EF4.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.EF4.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
+            this.EF4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.EF4.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.EF4.ForeColor = System.Drawing.Color.White;
+            this.EF4.Location = new System.Drawing.Point(0, 378);
+            this.EF4.Name = "EF4";
+            this.EF4.Size = new System.Drawing.Size(200, 120);
+            this.EF4.TabIndex = 26;
+            this.EF4.TabStop = false;
+            this.EF4.Text = "Edge Finder";
+            this.EF4.UseVisualStyleBackColor = false;
             // 
             // button3
             // 
@@ -587,13 +709,50 @@
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button3.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.button3.ForeColor = System.Drawing.Color.White;
-            this.button3.Location = new System.Drawing.Point(6, 6);
+            this.button3.Location = new System.Drawing.Point(0, 0);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(200, 130);
+            this.button3.Size = new System.Drawing.Size(200, 120);
             this.button3.TabIndex = 20;
             this.button3.TabStop = false;
             this.button3.Text = "QRCode Reading";
             this.button3.UseVisualStyleBackColor = false;
+            this.button3.Click += new System.EventHandler(this.button3_Click_1);
+            // 
+            // button2
+            // 
+            this.button2.BackColor = System.Drawing.Color.Gray;
+            this.button2.FlatAppearance.BorderSize = 0;
+            this.button2.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.button2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
+            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button2.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.button2.ForeColor = System.Drawing.Color.White;
+            this.button2.Location = new System.Drawing.Point(0, 126);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(200, 120);
+            this.button2.TabIndex = 21;
+            this.button2.TabStop = false;
+            this.button2.Text = "Edge Detecting";
+            this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click_1);
+            // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.Color.Gray;
+            this.button1.FlatAppearance.BorderSize = 0;
+            this.button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.button1.ForeColor = System.Drawing.Color.White;
+            this.button1.Location = new System.Drawing.Point(0, 252);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(200, 120);
+            this.button1.TabIndex = 22;
+            this.button1.TabStop = false;
+            this.button1.Text = "Pattern Matching";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // backgroundWorker1
             // 
@@ -606,11 +765,6 @@
             // 
             this.sliderTimer.Interval = 10;
             this.sliderTimer.Tick += new System.EventHandler(this.sliderTimer_Tick);
-            // 
-            // sliderTimer2
-            // 
-            this.sliderTimer2.Interval = 10;
-            this.sliderTimer2.Tick += new System.EventHandler(this.sliderTimer2_Tick);
             // 
             // backgroundWorker2
             // 
@@ -626,18 +780,20 @@
             this.backgroundWorker3.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
             this.backgroundWorker3.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker3_ProgressChanged);
             // 
+            // sliderTimer5
+            // 
+            this.sliderTimer5.Interval = 10;
+            this.sliderTimer5.Tick += new System.EventHandler(this.sliderTimer5_Tick);
+            // 
             // sliderTimer4
             // 
             this.sliderTimer4.Interval = 10;
+            this.sliderTimer4.Tick += new System.EventHandler(this.sliderTimer4_Tick);
             // 
-            // compareImg
+            // sliderTimer2
             // 
-            this.compareImg.Location = new System.Drawing.Point(947, 411);
-            this.compareImg.Name = "compareImg";
-            this.compareImg.Size = new System.Drawing.Size(280, 210);
-            this.compareImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.compareImg.TabIndex = 6;
-            this.compareImg.TabStop = false;
+            this.sliderTimer2.Interval = 10;
+            this.sliderTimer2.Tick += new System.EventHandler(this.sliderTimer2_Tick);
             // 
             // Form1
             // 
@@ -661,11 +817,14 @@
             this.sliderPanel2.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.compareImg)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.comparedImg)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.masterImg)).EndInit();
             this.sliderPanel3.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.compareImg)).EndInit();
+            this.tabPage4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.sliderPanel4.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -692,7 +851,6 @@
         private System.Windows.Forms.CheckBox checkHide2;
         private System.Windows.Forms.Button ED2;
         private System.Windows.Forms.Button QR2;
-        private System.Windows.Forms.Timer sliderTimer2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox edgeDetect;
         private System.ComponentModel.BackgroundWorker backgroundWorker2;
@@ -713,8 +871,19 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Timer sliderTimer4;
         private System.Windows.Forms.PictureBox compareImg;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button EF3;
+        private System.Windows.Forms.Button EF1;
+        private System.Windows.Forms.Button EF2;
+        private System.Windows.Forms.Button EF4;
+        private System.Windows.Forms.Panel sliderPanel4;
+        private System.Windows.Forms.CheckBox checkHide4;
+        private System.Windows.Forms.Timer sliderTimer5;
+        private System.Windows.Forms.Timer sliderTimer4;
+        private System.Windows.Forms.Timer sliderTimer2;
     }
 }
 
