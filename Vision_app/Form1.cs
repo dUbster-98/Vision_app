@@ -191,7 +191,15 @@ namespace Vision_app
 
             targetBitmap.UnlockBits(targetBitmapData);
 
-            return targetBitmap;
+            Mat src = new Mat();
+            Mat dst = new Mat();
+            
+            src = BitmapConverter.ToMat(targetBitmap);
+            
+            Cv2.Threshold(src, dst, 230, 255, ThresholdTypes.Binary);
+            Bitmap dst1 = dst.ToBitmap();
+
+            return dst1;
         }
         public static double[,] kernelMatrix
         {
@@ -219,66 +227,6 @@ namespace Vision_app
             );
 
             return targetBitmap;
-        }
-
-
-        public static Bitmap ApplyBinaryLaplaceFilter(Bitmap bmpData)
-        {
-            int[,] kernelMatrix = new int[3, 3]  { { 0, 1, 0 },
-                                                { 1, -4, 1 },
-                                                {0, 1, 0} };
-
-            int width = bmpData.Width;
-            int height = bmpData.Height;
-            Bitmap copiedImage = new Bitmap(bmpData.Width, bmpData.Height, PixelFormat.Format8bppIndexed);
-            BitmapData LockedImage = bmpData.LockBits(new Rectangle(0, 0, bmpData.Width, bmpData.Height), ImageLockMode.ReadOnly, PixelFormat.Format8bppIndexed);
-            BitmapData DestData = copiedImage.LockBits(new Rectangle(0, 0, copiedImage.Width, copiedImage.Height), ImageLockMode.ReadWrite, PixelFormat.Format8bppIndexed);
-
-            int size = 3;
-            int radius = size / 2;
-
-            int gray = 0;
-
-
-            unsafe
-            {
-                var ptr = (byte*)LockedImage.Scan0;
-                var cptr = (byte*)DestData.Scan0;
-
-                Parallel.For(0, height, (int row) =>
-                {
-                    byte* tempPtr = (byte*)DestData.Scan0 + row * DestData.Stride;
-                    for (int col = 0; col < width; col++)
-                    {
-
-                        cptr[col] = 0;
-                    }
-                });
-
-                Parallel.For(1, height - 1, (int row) =>
-                {
-                    for (int col = 1; col < width - 1; col++)
-                    {
-                        gray = *(ptr + row * DestData.Stride + col - 1) + *(ptr + (row - 1) * DestData.Stride + col) -
-                            4 * (*(ptr + DestData.Stride * row + col)) + *(ptr + (row + 1) * DestData.Stride + col) + *(ptr + row * DestData.Stride + col + 1); //bytes[i, j - 1] + bytes[i - 1, j] - 4 * bytes[i, j] + bytes[i + 1, j] + bytes[i, j + 1];
-                        gray += 128;
-                        if (gray > 158)
-                        {
-                            gray = 0;
-                        }
-                        else
-                        {
-                            gray = 255;
-                        }
-                        *(cptr + row * DestData.Stride + col) = (byte)gray;//result[i*width + j] = (byte)gray;
-                    }
-                });
-            }
-
-            bmpData.UnlockBits(LockedImage);
-            copiedImage.UnlockBits(DestData);
-
-            return copiedImage;
         }
 
         private void comparedImg_MouseWheel(object sender, MouseEventArgs e)
@@ -460,9 +408,6 @@ namespace Vision_app
             Mat src = frameBitmap.ToMat();
 
 
-            //Bitmap bitmap1 = ApplyBinaryLaplaceFilter(frameBitmap);
-
-            
             Mat dst = src.Clone();
             Cv2.Flip(src, src, FlipMode.Y);
 
@@ -834,11 +779,10 @@ namespace Vision_app
                 return;
             }
 
-            Mat gray = new Mat();
             var bitmapFromFile = Bitmap.FromFile(upload_file1);
             Bitmap bitmap1 = new Bitmap(bitmapFromFile);
 
-            pictureBox1.Image = ApplyBinaryLaplaceFilter(bitmap1);
+            pictureBox1.Image = ApplyRGBLaplacian(bitmap1);
         }
 
 

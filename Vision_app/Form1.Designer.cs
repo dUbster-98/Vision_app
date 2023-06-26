@@ -692,7 +692,7 @@
             this.EF4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.EF4.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.EF4.ForeColor = System.Drawing.Color.White;
-            this.EF4.Location = new System.Drawing.Point(0, 378);
+            this.EF4.Location = new System.Drawing.Point(-3, 378);
             this.EF4.Name = "EF4";
             this.EF4.Size = new System.Drawing.Size(200, 120);
             this.EF4.TabIndex = 26;
